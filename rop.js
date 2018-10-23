@@ -7,7 +7,7 @@ var firstplay = true;
 
 var BPM = 109;
 var BPM_RATE = 60.0/BPM;
-//var startTime = Math.round(BPM_RATE*50);
+//var startTime = Math.round(BPM_RATE*40);
 var startTime = 0;
 
 var fontBump = { min: 2, max: 2.75 };
@@ -15,17 +15,20 @@ var fontBump = { min: 2, max: 2.75 };
 var errors = [
   'pwn[1337]: segfault at 7f2a90cd0000 ip 00007f2a90cd0000',
   'Segmentation fault (core dumped)',
-  '[   5293.2444] Kernel panic - not syncing'
-];
-var win = [
-  ['# id', 'uid=0(root) gid=0(root) groups=0(root)'],
-  ['# whoami', 'root']
+  '[   5293.2444] Kernel panic - not syncing',
+  'Connection refused'
 ];
 var landed = [
-  '[+] g0t r00t',
   '[+] connectback from 107.161.28.10',
+  '[+] g0t r00t!',
   '[+] replaced syscall handler',
-  '[+] KASLR slide: 0x4b0000',
+  '[+] KASLR slide: 0x4b000000',
+];
+var win = [
+  ['$ cat flag', 'HCTF{sm00th_r0p3rat0r}'],
+  ['# id', 'uid=0(root) gid=0(root) groups=0(root)'],
+  ['# whoami', 'root'],
+  ['# cat /etc/shadow', 'root:$1$u2kaj$RiBYa4UwjKViEjb1zjYUp/:16131:0:99999:7:::']
 ];
 var gadgets_x86 = [
   ['mov rsp, [rbp+0x10]', 'ret'],
@@ -41,7 +44,7 @@ var gadgets_arm = [
   ['ldp x29, x30, [sp], #0x10','ret'],
   ['strb w0, [x1, #0xa]','ret'],
   ['br x30'],
-  ['ldr x21, [sp, #0x20]','ldp x29, x30, [sp], #0x30','ret'],
+  ['ldr x21, [sp, #0x20]','ldp x29, x30, [sp], #0x30','ret']
 ];
 var gadgets = Math.random() < 0.5 ? gadgets_arm : gadgets_x86;
 
@@ -50,13 +53,15 @@ var scroller = null;
 var audio = new Audio('roproprop_loop.mp3');
 
 function setrop(t, frozen) {
-    var sz = 3;
-
     if (frozen) {
-      sz = 1.8;
-      fontBump.max = 2.0;
-      roptext.style.textAlign = 'left';
+      fontBump.min = 1.5;
+      fontBump.max = 1.5;
+
+      if (Array.isArray(t)) {
+        roptext.style.textAlign = 'left';
+      }
     } else {
+      fontBump.min = 2.0;
       fontBump.max = 2.75;
       roptext.style.textAlign = 'center';
     }
@@ -66,7 +71,6 @@ function setrop(t, frozen) {
     } else {
       roptext.innerHTML = t;
     }
-    //roptext.style.fontSize = sz + 'em';
 }
 
 function gadgetcycle() {
@@ -104,6 +108,8 @@ function gadgetcycle() {
 audio.addEventListener('ended', function() {
   jiffies = 0;
   gindex = parseInt(Math.random()*10);
+  gadgets = Math.random() < 0.5 ? gadgets_arm : gadgets_x86;
+
   console.log('Loop');
 
   clearInterval(scroller);
