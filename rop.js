@@ -27,13 +27,23 @@ var landed = [
   '[+] replaced syscall handler',
   '[+] KASLR slide: 0x4b0000',
 ];
-var gadgets = [
+var gadgets_x86 = [
   ['mov rsp, [rbp+0x10]', 'ret'],
   ['pop rdi', 'pop rsi', 'pop rdx', 'ret'],
   ['xchg eax, esp', 'ret'],
   ['jmp rsp'],
   ['pop rbp', 'pop r12', 'ret'],
+  ['add rcx, 8', 'jmp [rcx]']
 ];
+var gadgets_arm = [
+  ['stp x2, x3, [x0]', 'ret'],
+  ['str x0, [x1, #0x1b8]','br x11'],
+  ['ldp x29, x30, [sp], #0x10','ret'],
+  ['strb w0, [x1, #0xa]','ret'],
+  ['br x30'],
+  ['ldr x21, [sp, #0x20]','ldp x29, x30, [sp], #0x30','ret'],
+];
+var gadgets = Math.random() < 0.5 ? gadgets_arm : gadgets_x86;
 
 var textsource = gadgets;
 var scroller = null;
