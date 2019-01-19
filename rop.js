@@ -1,7 +1,7 @@
 var rythm = null;
 var roptext = null;
 var started = false;
-var gindex = parseInt(Math.random()*10);
+var gindex = 0;
 var jiffies = 0;
 var firstplay = true;
 
@@ -107,8 +107,8 @@ function gadgetcycle() {
 
 audio.addEventListener('ended', function() {
   jiffies = 0;
-  gindex = parseInt(Math.random()*10);
   gadgets = Math.random() < 0.5 ? gadgets_arm : gadgets_x86;
+  gindex = parseInt(Math.random()*gadgets.length);
 
   console.log('Loop');
 
@@ -129,11 +129,13 @@ audio.addEventListener('ended', function() {
 
 function toggle() {
 
+  // pause
   if (started) {
     audio.pause();
     rythm.stop(true);
     clearInterval(scroller);
     started = false;
+  // play
   } else {
     audio.play();
 
@@ -163,6 +165,7 @@ function install() {
   rythm.addRythm('fontSize', 'fontSize', 10, 10, fontBump);
 
   roptext = document.getElementById("rop-text");
+  gindex = parseInt(Math.random()*gadgets.length);
 
   window.addEventListener("click", function(event) {
     toggle();
