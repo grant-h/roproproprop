@@ -155,6 +155,7 @@ function install() {
     if (firstplay) {
       rythm = new Rythm();
       rythm.connectExternalAudioElement(audio);
+      audio.volume = 0.5;
       //rythm.setMusic("roproprop_loop.mp3");
 
       rythm.maxValueHistory = 20;
