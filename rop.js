@@ -151,23 +151,25 @@ function toggle() {
 }
 
 function install() {
-  rythm = new Rythm();
-  rythm.connectExternalAudioElement(audio);
-  //rythm.setMusic("roproprop_loop.mp3");
-
-  rythm.maxValueHistory = 20;
-
-  rythm.addRythm('color2', 'color', 100,10, {
-    from: [00,0,0],
-    to:[00,30,00]
-  });
-
-  rythm.addRythm('fontSize', 'fontSize', 10, 10, fontBump);
-
-  roptext = document.getElementById("rop-text");
-  gindex = parseInt(Math.random()*gadgets.length);
-
   window.addEventListener("click", function(event) {
+    if (firstplay) {
+      rythm = new Rythm();
+      rythm.connectExternalAudioElement(audio);
+      //rythm.setMusic("roproprop_loop.mp3");
+
+      rythm.maxValueHistory = 20;
+
+      rythm.addRythm('color2', 'color', 100,10, {
+        from: [00,0,0],
+        to:[00,30,00]
+      });
+
+      rythm.addRythm('fontSize', 'fontSize', 10, 10, fontBump);
+
+      roptext = document.getElementById("rop-text");
+      gindex = parseInt(Math.random()*gadgets.length);
+    }
+
     toggle();
   });
 
